@@ -86,6 +86,10 @@ if len(args.output_file) >= 1:
     OUTPUT_FILE = args.output_file
 else:
     OUTPUT_FILE = inputToOutputFilename(INPUT_FILE)
+    
+# Safe file name for dots and blanks
+INPUT_FILE = "\""+INPUT_FILE+"\""
+OUTPUT_FILE = "\""+OUTPUT_FILE+"\""
 
 TEMP_FOLDER = "TEMP"
 AUDIO_FADE_ENVELOPE_SIZE = 400 # smooth out transitiion's audio by quickly fading in/out (arbitrary magic number whatever)
