@@ -1,8 +1,11 @@
+import re
 from moviepy.editor import VideoFileClip
 import sys
 import os 
 from shutil import rmtree
 from collections import deque
+import patoolib
+import subprocess 
 
 TEMP_FOLDER = "TEMP"
 
@@ -67,13 +70,22 @@ def get_all_mp4():
             if 'mp4' in l:    
                 lt.append(l)  
         return lt
-
+    
+def get_all_rar():        
+        lt = []
+        for l in os.listdir():
+            if 'rar' in l:    
+                lt.append(l)  
+        return lt
+    
 def deletePath(s): # Dangerous! Watch out!
     try:  
         rmtree(s, ignore_errors=False)
     except OSError:  
         print ("Deletion of the directory %s failed" % s)
         print(OSError)
+
+
 
 if os.path.isdir(TEMP_FOLDER):
     deletePath(TEMP_FOLDER)
@@ -82,6 +94,28 @@ if os.path.isdir(TEMP_FOLDER):
 else:
     log_str = "The folder "+TEMP_FOLDER+" was not here."
     log_print(log_str)
+
+def unrar(unrar_filename):
+    patoolib.extract_archive("e.rar", outdir="OUT")
+
+def sevenzip(filename, zipname, password):
+    print("Password is: {}".format(password))
+    system = subprocess.Popen(["7z", "e", zipname, filename, "-p{}".format(password)])
+    return(system.communicate())
+
+def unrar_all_rar_files():
+    for rar_file in get_all_rar():
+        sevenzip(rar_file, rar_file[:-4])
+    else:
+        raise "£rror"
+
+def copy_mp4_files():
+    dir = '.'
+    allfiles = os.listdir(dir)
+    files = [ fname for fname in allfiles if fname.endswith('.mp4')]
+    
+
+unrar_all_rar_files()
 for file in get_all_mp4():
     if os.path.isfile(file[:-4]+"_ALTERED.mp4"):
         continue
